@@ -5,3 +5,4 @@ reference: *soon*
 
 documentation: *soon*
 
+contact: jagerz24@gmail.com

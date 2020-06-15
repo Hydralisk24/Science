@@ -43,14 +43,19 @@ double xmin=0.1;		/*Minimum ionization radius*/
 
 			// fast running (but with bigger numerical errors) (this used in the mcmc)
 			int fastrun=1;
-			// Data checking?
-			int csekk=1;
+	
+	
+	
+	
+	
+	
+	
+			
+// Data checking?
+int csekk=0;  // defined by arguments!!!!
 			
 			
-			
-			
-			
-			
+						
 			
 			
 			
@@ -141,7 +146,7 @@ void data()			 /*Reading input file*/
  
  f.open("parameters.inp", std::ifstream::in);
  //f=fopen("parameters.inp","rt");
- if(f==NULL){printf("No parameter file! Generating a default! Exiting!\n"); defaultdata(); exit(1);}
+ if( !f.is_open() ){printf("No standard parameter file! Generating a default! Exiting!\n"); defaultdata(); exit(1);}
 
    //fscanf(f,"%lf",&R0);   	  /*Initial radius (cm)*/
    //fscanf(f,"%lf",&M);    	  /*Ejecta mass (M_sun)*/
@@ -196,9 +201,9 @@ void data()			 /*Reading input file*/
  
  f.open("parametersMC.inp", std::ifstream::in);
  //f=fopen("parametersMC.inp","rt");
- if(f==NULL){printf("No parameter file!\n"); exit(1);}
+ if( !f.is_open() ){printf("No MCMC parameter file! Exiting!\n"); exit(1);}
  fg=fopen("par.inp","rt");
- if(fg==NULL){printf("No parameter 2 file!\n"); exit(1);}
+ if(fg==NULL){printf("No checking parameter file (par.inp)! Exiting!\n"); exit(1);}
  
  double temp;
 
@@ -412,8 +417,12 @@ double fxi(double x){
 
 
 
-int main()
+int main(int argc, char **argv)
 {
+	csekk=argc-1; if(csekk>1) csekk=1; if(csekk<0) csekk=0;
+	//file: no csekk, file 1: csekk
+	//argc: number of arguments (default 1), file 1 1 -> argc=3
+
 int j=0,i=0, lep=0;
 double dF1,dF2,dF3,dF4;
 double opac,opac1,f,g1;
@@ -424,9 +433,12 @@ tco=111.3*day;				/*Co decay time (s)*/
 Z=1.0;					/*Average atomic charge in ejecta*/
 A=1.0;					/*Average atomic mass in ejecta*/
 
+if(fastrun!=1) printf("Slower precise run.\n"); else printf("Fast run.\n");
+if(csekk!=1) printf("Standard mode\n\n"); else printf("Checking: MCMC parameter file used.\n\n");
+
 FILE *fki;
-fki=fopen("kimenet.out","w");
 if(csekk!=1) data(); else data2();
+fki=fopen("kimenet.out","w");
 
 if(fastrun!=1) xmin=0.1; else xmin=0.2;   // +++                !!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -534,6 +546,9 @@ if(fastrun!=1) xmin=0.1; else xmin=0.2;   // +++                !!!!!!!!!!!!!!!!
 	  Xni=   exp( -t/tni );   
 	  Xco= (-exp( -t/tni ) + exp( -t/tco )) / (-tni*(1./tco-1./tni));   	  	  
   	  g=Xni+p5*Xco;
+  	  
+  	  if(tp==0) Em=0;
+  	  else Em=Ep/(tp*pow((1.0+t/tp),2.0));
 	  
 	 	  	  	  	  
 	  ri=xi*R;
@@ -547,7 +562,7 @@ if(fastrun!=1) xmin=0.1; else xmin=0.2;   // +++                !!!!!!!!!!!!!!!!
 	  if (Lion<0) Lion=0.0;	 
 	  L=xi*F*Eth*opac/td; 
 	  }
-	  if(tilt==1) L= Mni*opac*( Eni *Xni + Eco *Xco);
+	  if(tilt==1) L= Mni*opac*( Eni *Xni + Eco *Xco)  +  opac*Em;
 	  
 	  Lpoz=Mni*(Ekin+Ean*opac)*opac1 * exp(-t/tco)-exp(-t/tni);
 	   	  	     	  

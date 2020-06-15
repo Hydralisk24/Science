@@ -28,7 +28,9 @@
 5e-001	[MAX Initial nickel mass (Msol)]
 1e+003	[MIN Gamma-leak (day^2)]
 1e+007	[MAX Gamma-leak (day^2)]
-1	[Fit the nickel mass? (binary)]
+0	[Expansion velocity mean priori (km/s)(0: not fit)]
+0	[Expansion velocity sigma priori (km/s)(gauss)]
+1	[Determinate the nickel mass Ag function? (binary)]
 0.1	[Metropolis–Hastings step parameter, default 0.1]
 30000	[Step parameter (exponental) decay (loop number), default 30000]
 0.2	[Minimum ionisation zone (between 0.1 and 1)]
@@ -36,3 +38,4 @@
 
 0	[Whole (W) =1 or No Tail (T) =0 used?]
 80	[Plotting grid number]
+30000	[burn in (steps)(=Step decay suggested)]

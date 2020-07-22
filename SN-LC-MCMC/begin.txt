@@ -1,8 +1,7 @@
 Supernova explosion Light-Curve modeller based on Arnett & Fu, later Extended by Nagy et al.
 Upgraded by Jager et al to search for numerical fitting solutions with Marcow Chain MonteCarlo method. 
 
-reference: Jager et al., 2020, MNRAS
-accepted
+reference: Jager et al., 2020, MNRAS, 496, 3725J
 
 documentation: doksi.pdf
 technical manual

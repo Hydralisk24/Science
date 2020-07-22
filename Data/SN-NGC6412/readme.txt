@@ -11,4 +11,9 @@ bolometric light curves
 SN-NGC6412data.txt
 BVRI table (Latex format)
 
-reference for the comperators: please see Jager et al., 2020
+SN-NGC6412-BOL-combined.txt
+Bolometric magnitudes
+combined: two method used, first (where no flux values) from the BC_B(B-I) function (Bolometric Correction)
+Second, integral of the band with approximations for the other regions
+
+for more information and reference for the comperators: please see Jager et al., 2020, MNRAS 496 3725J

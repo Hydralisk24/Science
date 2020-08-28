@@ -730,6 +730,11 @@ double SNR(vector <double> ref, vector <double> gx){
 
 int main(int argc, char **argv){
 	
+	//cout << 5*100/6 << endl;
+	//double cica=0;
+	//double kutya=0;
+	//cout << cica/kutya << endl;
+	//exit(1);
 	
 	//cout << setprecision(6) << showpoint << 1380.50 << endl;
 	//cout << setprecision(6) << showpoint << 46.8385 << endl;
@@ -1625,9 +1630,11 @@ for(int k=0;k<list.size()+1;k++){
   //if dt=1 then do it twice
   for(int o=0;o<=(dt==1?1:0);o++)
    // j stand for the index of the time, tj saves the best fit j
-   for(int j=(o==0?0:mn(tj-9,0));     j<=(o==0?ref[0].size()-1+(k>=list.size()):mk(tj+9,ref[0].size()-1));  ){
+   for(int j=(o==0?0:mn(tj-9,0));     j<=(o==0?ref[0].size()-1+(k>=list.size()):mk(tj+9,ref[0].size()-1));       ){
 
-
+	double temp=0;
+	int temp2=0;
+	int temp3=0;
 
  	
 	 if(k<list.size()){
@@ -1636,13 +1643,27 @@ for(int k=0;k<list.size()+1;k++){
 	  t=reft[j];  // stores the time (not the index), get it from the array
  
  	 // initial guess for the c
+ 	 /*
 	 c=tc=c0=0.2*(
  	 spec[100]/ref[0][j][100]+
  	 spec[200]/ref[0][j][200]+
  	 spec[300]/ref[0][j][300]+
  	 spec[400]/ref[0][j][400]+
  	 spec[500]/ref[0][j][500]
- 	 );
+ 	 );*/
+ 	 
+ 	  c0=0; temp=0; temp2=0; temp3=0;
+	  for(int i=1; i<=5; i++){
+		  temp3= ( spec.size()>ref[0][j].size() ? ref[0][j].size() : spec.size()  );
+		  temp=spec[i*temp3/6]/ref[0][j][i*temp3/6];   // 5/6 a max!
+		  
+		  //temp=spec[i*100]/ref[0][j][i*100];
+ 	 	  if(temp*0==0){ c0=c0+temp; temp2++; }
+ 	 		
+	  }
+	  c0=1.*c0/temp2; c=tc=c0;
+ 	 
+ 	 
  	 cout << "t= " << int(t) << "  start c:   " << tc << endl ;//<< endl; //getchar();
  	 fki << "t= " << int(t) << "  start c:   " << tc << endl ;
     }
@@ -1670,7 +1691,7 @@ for(int k=0;k<list.size()+1;k++){
  
 	 tkhi=1e300;
 
-
+	if(c0*0!=0){ if(dt!=1 || o>0) j++; else j=j+5; continue; }
 
 	 /* itt kell a int(list2.size() )  kulonben az allitas nem igaz!!  ha az osszehasonlito negativ akkor nem jo, pozitivra jo*/
 	 // search for galaxy model (grid method), note: g=-1 tands for no galaxy model used
@@ -1681,14 +1702,27 @@ for(int k=0;k<list.size()+1;k++){
 	 	 if(k>=list.size() && g<0) continue;  // skipping the no SN and no GX part
 	 
  		 //cout << "g: " << g << endl;
- 
+ 		/*
  		 if(g>=0) cg=tcg=c0g=0.2*0.1*(
  		 spec[100]/gx[0][g][100]+
  		 spec[200]/gx[0][g][200]+
  		 spec[300]/gx[0][g][300]+
  		 spec[400]/gx[0][g][400]+
  		 spec[500]/gx[0][g][500]
- 		 );
+ 		 );*/
+ 		 
+ 		if(g>=0){
+		c0g=0; temp=0; temp2=0; temp3=0;
+	  	 for(int i=1; i<=5; i++){
+		   temp3= ( spec.size()>gx[0][g].size() ? gx[0][g].size() : spec.size()  );
+		   temp=spec[i*temp3/6]/gx[0][g][i*temp3/6];   // 5/6 a max!
+		   
+		   //temp=spec[i*100]/gx[0][g][i*100];
+ 	 	   if(temp*0==0){ c0g=c0g+temp; temp2++; }
+ 	 		
+	     }
+	     c0g=1.*c0g/temp2; cg=tcg=c0g;
+	    }
 
  		 //cout <<"Galaxy ID: "<<g<< "  start c_g:   " << tcg << endl; //getchar();
  		 //fki <<"Galaxy ID: "<<g<< "  start c_g:   " << tcg << endl;
@@ -2084,12 +2118,11 @@ for(int k=0;k<list.size()+1;k++){
 
 
 
-   cout << "t= " << int(t) << "      Khi_N= " << parasave[8] << endl << endl;
+   cout << int( 100.*k/(list.size()+1) ) << "%    t= " << int(t) << "      Khi_N= " << parasave[8] << endl << endl;
    fki << "t= " << int(t) << "      Khi_N= " << parasave[8] << endl;
 
    // steps in time
-   if(dt!=1 || o>0) j++;
-   else j=j+5;
+   if(dt!=1 || o>0) j++; else j=j+5;
 
    }  // end of time gridding
 
@@ -2136,10 +2169,11 @@ for(int k=0;k<list.size()+1;k++){
 	  if(k<list.size()) tSNR[k] = SNR(ref[0][tj],gx[0][targx[k]]) ; 
 	  else tSNR[k] = -1;
 	  cout << tSNR[k] << endl;
-	  cout << endl; 
+	  
       }
     
-    cout << endl;
+    cout << endl; 
+	cout << endl;
 
 
 
@@ -2438,8 +2472,10 @@ for(int i,k=0;i<list.size()+1;i++){
 		fki << "zg= " << zgS[k]; if(fixzg!=0) fki << "   (fixed) "; fki << endl;
 		fki << "Galaxy/Model flux ratio=  "; 
 		fki << tSNR[k] << endl; 
-		fki << endl << endl; 
+		
 		}
+	
+	fki << endl << endl; 
 	
 	}
 	

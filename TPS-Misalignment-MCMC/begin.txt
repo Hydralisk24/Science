@@ -1,3 +1,10 @@
 Thomson Parabola Spectrometer (TPS) modelling for misalignments and other with 4rd order Runge-Kutta and MCMC
 
-reference: 
+reference: *under publication*
+
+documentation: *WIP*
+technical manual
+
+contact: jagerz24@gmail.com
+or
+jager.zoltan.02@szte.hu
